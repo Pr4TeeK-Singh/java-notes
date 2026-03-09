@@ -1,0 +1,71 @@
+# ☕ Java Programming — Complete Study Notes
+
+> A structured, beginner-friendly guide to Java covering core concepts from fundamentals to OOP and beyond.
+
+---
+
+## 📖 Table of Contents
+
+| # | Chapter | Topics Covered |
+|---|---------|----------------|
+| 1 | [Introduction to Java](chapters/chapter-1-introduction-to-java.md) | Features, JVM, Bytecode, Classes, Objects, Inheritance, Compilation |
+| 2 | [Basic Language Elements](chapters/chapter-2-basic-language-elements.md) | Tokens, Data Types, Operators, Literals, Precedence, Shifts |
+| 3 | [Declarations](chapters/chapter-3-declarations.md) | Classes, Methods, Variables, Arrays, Overloading, main() |
+| 4 | [Control Flow](chapters/chapter-4-control-flow.md) | if/else, switch, Loops, break, continue, return |
+| 5 | [Object-Oriented Programming](chapters/chapter-5-oops.md) | Inheritance, Polymorphism, Interfaces, Abstract Classes, Enums, Records, Sealed Classes |
+| 6 | [Access Control](chapters/chapter-6-access-control.md) | Encapsulation, Packages, Source File Structure, Access Modifiers |
+
+---
+
+## 📚 Chapter Summaries
+
+### [Chapter 1 — Introduction to Java](chapters/chapter-1-introduction-to-java.md)
+Covers what makes Java special: **Write Once, Run Anywhere**, the **JVM and bytecode**, garbage collection, and security. Introduces the building blocks — **classes**, **objects**, **instance members**, **inheritance**, and **aggregation** — and explains how to compile and run Java programs.
+
+### [Chapter 2 — Basic Language Elements](chapters/chapter-2-basic-language-elements.md)
+Dives into the **syntax layer** of Java: identifiers, keywords, literals, and separators. Explains all **8 primitive data types**, **operator precedence and associativity**, arithmetic, relational, equality, conditional (`&&`, `||`), increment/decrement, and **bit-shift operators**.
+
+### [Chapter 3 — Declarations](chapters/chapter-3-declarations.md)
+Explains how to formally declare **classes**, **methods**, and **variables** in Java. Covers **method overloading**, **arrays** (declaration, creation, initialization, access), and the special rules around the **`main()` method** as the program entry point.
+
+### [Chapter 4 — Control Flow](chapters/chapter-4-control-flow.md)
+Covers how Java controls the order of execution. Includes **selection** (`if`, `if-else`, `switch`), **iteration** (`while`, `do-while`, `for`, enhanced `for`), and **transfer** statements (`break`, `continue`, `return`). Also explains labeled breaks and the dangling-else problem.
+
+### [Chapter 5 — Object-Oriented Programming](chapters/chapter-5-oops.md)
+The heart of Java: **inheritance**, **overriding vs overloading**, **abstract classes**, **interfaces**, **polymorphism**, **final** keyword, **enums**, **record classes**, and **sealed classes**. Covers the `super` keyword and field/static method hiding.
+
+### [Chapter 6 — Access Control](chapters/chapter-6-access-control.md)
+Explains **encapsulation** as a design principle and how Java enforces it through **access modifiers**, **packages**, and **modules**. Covers Java source file structure, package naming conventions, and how to import and organize classes.
+
+---
+
+## 🗂️ How to Use These Notes
+
+- Each chapter file is self-contained and can be read independently.
+- Code examples are included throughout for every key concept.
+- Notes are written in plain English — ideal for beginners and revision.
+
+---
+
+## 🛠️ Prerequisites
+
+- Basic understanding of programming logic is helpful but not required.
+- Java JDK 11+ recommended for running examples.
+- Any IDE (IntelliJ IDEA, Eclipse, VS Code) or a simple text editor works.
+
+---
+
+## 📌 Quick Reference
+
+| Concept | Chapter |
+|---------|---------|
+| How JVM works | [Ch. 1](chapters/chapter-1-introduction-to-java.md#12-classes) |
+| Primitive data types | [Ch. 2](chapters/chapter-2-basic-language-elements.md#22-primitive-data-types) |
+| Arrays | [Ch. 3](chapters/chapter-3-declarations.md#36-arrays) |
+| Loops | [Ch. 4](chapters/chapter-4-control-flow.md#43-iteration-statements-loops) |
+| Interfaces & Polymorphism | [Ch. 5](chapters/chapter-5-oops.md#8-polymorphism) |
+| Packages & Encapsulation | [Ch. 6](chapters/chapter-6-access-control.md) |
+
+---
+
+*Notes compiled for learning purposes. Java is a trademark of Oracle Corporation.*
