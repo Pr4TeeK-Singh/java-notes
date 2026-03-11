@@ -14,6 +14,7 @@
 | 4 | [Control Flow](chapters/chapter-4-control-flow.md) | if/else, switch, Loops, break, continue, return |
 | 5 | [Object-Oriented Programming](chapters/chapter-5-oops.md) | Inheritance, Polymorphism, Interfaces, Abstract Classes, Enums, Records, Sealed Classes |
 | 6 | [Access Control](chapters/chapter-6-access-control.md) | Encapsulation, Packages, Source File Structure, Access Modifiers |
+| 7 | [Exception Handling](chapters/chapter-7-exception-handling.md) | Stack Execution, Exception Types, Checked vs Unchecked, Error Class |
 
 ---
 
@@ -36,6 +37,9 @@ The heart of Java: **inheritance**, **overriding vs overloading**, **abstract cl
 
 ### [Chapter 6 — Access Control](chapters/chapter-6-access-control.md)
 Explains **encapsulation** as a design principle and how Java enforces it through **access modifiers**, **packages**, and **modules**. Covers Java source file structure, package naming conventions, and how to import and organize classes.
+
+### [Chapter 7 — Exception Handling](chapters/chapter-7-exception-handling.md)
+Covers how Java handles unexpected events using the **throw-and-catch** model. Explains the **JVM stack** and how exceptions propagate, the full **exception hierarchy** (`Throwable`, `Exception`, `Error`), common runtime and checked exceptions with real examples, and the difference between **checked vs unchecked exceptions**.
 
 ---
 
@@ -65,6 +69,8 @@ Explains **encapsulation** as a design principle and how Java enforces it throug
 | Loops | [Ch. 4](chapters/chapter-4-control-flow.md#43-iteration-statements-loops) |
 | Interfaces & Polymorphism | [Ch. 5](chapters/chapter-5-oops.md#8-polymorphism) |
 | Packages & Encapsulation | [Ch. 6](chapters/chapter-6-access-control.md) |
+| Exception Types & Hierarchy | [Ch. 7](chapters/chapter-7-exception-handling.md) |
+| Checked vs Unchecked | [Ch. 7](chapters/chapter-7-exception-handling.md#checked-vs-unchecked-exceptions) |
 
 ---
 
