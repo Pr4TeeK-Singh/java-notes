@@ -273,4 +273,300 @@ Thrown when a **resource bundle** (like a language file) cannot be found for a g
 
 ---
 
+---
+
+## 7.3 Exception Handling: `try`, `catch`, and `finally`
+
+The main tool for handling exceptions in Java is the **try-catch-finally** construct.
+
+```java
+try {
+    // code that might throw an exception
+} catch (ExceptionType e) {
+    // code to handle the exception
+} finally {
+    // code that ALWAYS runs (cleanup)
+}
+```
+
+### Rules at a Glance
+
+| Part | Required? | How many? |
+|------|-----------|-----------|
+| `try` block | ✅ Yes | Exactly 1 |
+| `catch` clause | ❌ Optional | 0 or more |
+| `finally` clause | ❌ Optional | 0 or 1 |
+
+> A `try` block must have **at least one** `catch` OR one `finally` — you can't have a bare `try` alone.
+
+---
+
+### The `try` Block
+
+- Wraps the code that **might go wrong**.
+- If NO exception occurs → all `catch` clauses are skipped.
+- If an exception occurs → Java jumps to the matching `catch` clause.
+
+```java
+try {
+    int result = 10 / 0;       // this throws ArithmeticException
+    System.out.println(result); // this line is SKIPPED
+}
+```
+
+---
+
+### The `catch` Clause
+
+- **Catches** the exception if the thrown type matches the parameter type.
+- Only the **first matching** `catch` block runs — all others are ignored.
+- After the `catch` block runs → execution continues normally after the whole try-catch.
+
+```java
+try {
+    int result = 10 / 0;
+} catch (ArithmeticException e) {
+    System.out.println("Caught: " + e.getMessage());  // "/ by zero"
+}
+```
+
+> ⚠️ The exception type in `catch` must be `Throwable` or one of its subclasses.
+
+---
+
+### The `finally` Clause
+
+- **Always runs** — whether an exception happened or not.
+- Perfect for **cleanup code**: closing files, releasing connections, etc.
+- Only skipped if the JVM crashes or `System.exit()` is called.
+
+```java
+try {
+    int sum = sumNumbers();
+} finally {
+    if (sum > 0) calculateAverage();  // always runs
+}
+```
+
+### Three Scenarios of try-catch-finally
+
+| Scenario | What happens |
+|----------|-------------|
+| **1. No exception** | `try` runs fully → `catch` skipped → `finally` runs → normal execution continues |
+| **2. Exception caught** | `try` stops at exception → matching `catch` runs → `finally` runs → normal execution continues |
+| **3. Exception NOT caught** | `try` stops at exception → no matching `catch` → `finally` runs → exception propagates up the stack |
+
+### Full Example
+
+```java
+public static void printAverage(int totalSum, int totalCount) {
+    try {
+        int average = computeAverage(totalSum, totalCount);     // (2)
+        System.out.println("Average = " + totalSum + "/" +
+                            totalCount + " = " + average);
+    } catch (ArithmeticException ae) {                          // (3)
+        ae.printStackTrace();
+        System.out.println("Exception handled in printAverage().");
+    } finally {                                                 // (4)
+        System.out.println("Finally done.");
+    }
+    System.out.println("Exit printAverage().");                 // (5)
+}
+```
+
+- If `ArithmeticException` is thrown → caught at (3) → `finally` at (4) runs → execution resumes at (5).
+- If no exception → `catch` skipped → `finally` at (4) runs → execution continues at (5).
+
+---
+
+## 7.4 The `throw` Statement
+
+So far we've seen exceptions thrown **by the JVM**. You can also **throw exceptions yourself** using the `throw` statement.
+
+```java
+throw new ArithmeticException("Integer division by 0");
+```
+
+### Syntax
+
+```java
+throw objectReferenceExpression;
+```
+
+- The object must be of type `Throwable` or one of its subclasses.
+- A **detail message** is usually passed to the constructor to describe the problem.
+- Once thrown, normal execution **stops immediately** — Java looks for a matching `catch`.
+
+### Example
+
+```java
+public static int computeAverage(int sum, int count) {
+    System.out.println("Computing average.");
+    if (count == 0)
+        throw new ArithmeticException("Integer division by 0");  // throw manually
+    return sum / count;
+}
+```
+
+> **Key point:** A manually thrown exception propagates **exactly the same way** as one thrown by the JVM. Java searches up the call stack for a `catch` clause that can handle it.
+
+---
+
+## 7.5 The `throws` Clause
+
+The `throws` clause goes in the **method header** to declare which **checked exceptions** that method might throw.
+
+```java
+public static void printAverage(int totalSum, int totalCount)
+        throws IntegerDivisionByZero {
+    // method body
+}
+```
+
+### Why It's Needed
+
+- For **checked exceptions**, the compiler enforces what's called the **catch-or-declare rule**:
+  - Either **catch** the exception inside the method using `try-catch`, OR
+  - **Declare** it in the `throws` clause so the caller knows to handle it.
+
+```java
+// Option 1: Catch it yourself
+try {
+    riskyMethod();
+} catch (IOException e) {
+    // handle it
+}
+
+// Option 2: Declare it — let the caller deal with it
+public void myMethod() throws IOException {
+    riskyMethod();
+}
+```
+
+### Key Rules
+
+| Rule | Detail |
+|------|--------|
+| Multiple exceptions | `throws IOException, SQLException` — comma-separated |
+| Unchecked exceptions | Can be listed in `throws` but compiler doesn't require it |
+| Callers | Cannot ignore checked exceptions declared in `throws` — they must also catch or declare |
+
+> **Think of `throws` as a warning label** — it tells anyone calling this method: "Be prepared, this might go wrong."
+
+### Custom Exception Example
+
+```java
+// Define a custom checked exception
+public class IntegerDivisionByZero extends Exception {
+    IntegerDivisionByZero() { super("Integer Division by Zero"); }
+}
+
+// Use it
+public static int computeAverage(int sum, int count)
+        throws IntegerDivisionByZero {
+    if (count == 0)
+        throw new IntegerDivisionByZero();   // throw custom exception
+    return sum / count;
+}
+```
+
+---
+
+## 7.6 The Multi-`catch` Clause
+
+Sometimes different exceptions need the **same handling code**. Instead of writing duplicate `catch` blocks, Java allows catching **multiple exception types in one clause**.
+
+### Without Multi-catch (repetitive)
+
+```java
+try {
+    // risky code
+} catch (ArrayIndexOutOfBoundsException e) {
+    System.out.println(e);
+    System.out.println("Usage: java Program <arg1> <arg2>");
+} catch (NumberFormatException e) {
+    System.out.println(e);
+    System.out.println("Usage: java Program <arg1> <arg2>");
+}
+```
+
+### With Multi-catch (clean!)
+
+```java
+try {
+    // risky code
+} catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
+    System.out.println(e);
+    System.out.println("Usage: java Program <arg1> <arg2>");
+}
+```
+
+- Use the **pipe** `|` symbol to separate exception types.
+- The variable `e` refers to whichever exception was actually thrown.
+- Much cleaner — no code duplication.
+
+> ⚠️ **Avoid this anti-pattern:** Catching a broad parent like `RuntimeException` just to avoid duplicating code — this hides bugs because you end up catching exceptions you didn't intend to.
+
+```java
+// NOT RECOMMENDED
+catch (RuntimeException rte) {
+    System.out.println(rte);  // catches everything — too broad!
+}
+```
+
+---
+
+## 7.8 Advantages of Exception Handling
+
+Java's exception handling mechanism makes programs more **robust** (able to handle unexpected situations gracefully). Here's why it's better than manual error checking:
+
+### 1. Separation of Error Handling Code
+
+- Normal program logic and error handling code are **kept separate**.
+- The `try` block has the normal code. The `catch` block has the error handling.
+- This makes code **much easier to read and maintain**.
+
+```java
+// Without exceptions — error checks mixed with logic (messy)
+if (fileExists) {
+    if (hasPermission) {
+        if (notEmpty) {
+            // actual work here
+        }
+    }
+}
+
+// With exceptions — clean separation
+try {
+    // actual work here
+} catch (FileNotFoundException e) {
+    // handle missing file
+} catch (IOException e) {
+    // handle read error
+}
+```
+
+### 2. Transparent Exception Propagation
+
+- A **checked exception cannot be silently ignored** — the compiler enforces this.
+- Every method that can throw a checked exception must either handle it or declare it with `throws`.
+- This means error situations **always get detected** — nothing slips through unnoticed.
+
+### 3. Exception Categorization and Specialization
+
+- The exception hierarchy organizes exceptions logically.
+- **Higher in the hierarchy** = broad category (e.g., `Exception`, `IOException`).
+- **Lower in the hierarchy** = specific problem (e.g., `FileNotFoundException`, `NullPointerException`).
+- You can catch broad or specific — the `try-catch` gives you flexibility to handle at whatever level makes sense.
+
+### Summary
+
+| Advantage | What it means in practice |
+|-----------|--------------------------|
+| Separation | Error code doesn't clutter normal logic |
+| Propagation | Checked exceptions can't be accidentally ignored |
+| Categorization | Catch the right level — broad or specific |
+
+---
+
 [← Previous Chapter](chapter-6-access-control.md) | [Back to Index](../README.md)
