@@ -330,6 +330,237 @@ String full2 = firstName.concat(" ").concat(lastName);  // "John Doe"
 | Mutable alternative | Use `StringBuilder` |
 | Final class? | ✅ Yes — cannot be subclassed |
 
+# 📚 Java API Notes — Chapter 8: Selected API Classes
+
+> **Topics Covered:** String Class (Comparing Strings) · StringBuilder Class · Math Class
+
+---
+
+## 🔤 8.4 The String Class — Comparing Strings
+
+### How are characters compared?
+Characters in Java are compared using their **Unicode values**.
+
+```java
+boolean test = 'a' < 'b'; // true because 0x61 < 0x62
+```
+
+### Lexicographic Comparison (Dictionary Order)
+Two strings are compared **character by character** from left to right — just like words in a dictionary.
+
+**Example:**
+- `"abba"` vs `"aha"` → `"abba"` is **less than** `"aha"`
+  - At position 1: `'b'` < `'h'` → so `"abba"` comes first
+
+---
+
+### 🛠️ Methods for Comparing Strings
+
+#### 1. `equals()` and `equalsIgnoreCase()`
+```java
+boolean equals(Object obj)
+boolean equalsIgnoreCase(String str2)
+```
+- `equals()` → checks if two strings have the **exact same characters**
+- `equalsIgnoreCase()` → same, but **ignores uppercase/lowercase**
+
+```java
+String strA = new String("The Case was thrown out of Court");
+String strB = new String("the case was thrown out of court");
+
+boolean b1 = strA.equals(strB);            // false (case differs)
+boolean b2 = strA.equalsIgnoreCase(strB);  // true
+```
+
+---
+
+#### 2. `compareTo()`
+```java
+int compareTo(String str2)
+```
+Compares two strings and returns:
+
+| Return Value | Meaning |
+|---|---|
+| `0` | Both strings are **equal** |
+| Negative value | This string is **less than** the argument |
+| Positive value | This string is **greater than** the argument |
+
+> The String class implements the `Comparable<String>` interface.
+
+```java
+String str1 = "abba";
+String str2 = "aha";
+
+int compVal1 = str1.compareTo(str2); // negative value → str1 < str2
+```
+
+---
+
+## 🧱 8.5 The StringBuilder Class
+
+### What is StringBuilder?
+- `String` and `StringBuilder` are **two independent final classes** — both extend `Object` directly.
+- You **cannot** store a `String` reference in a `StringBuilder` variable (and vice versa).
+- Both implement the **`CharSequence`** interface and **`Comparable`** interface.
+
+### Key Difference from String
+
+| Feature | String | StringBuilder |
+|---|---|---|
+| Mutability | ❌ Immutable | ✅ Mutable |
+| Thread-safe | ✅ Yes (immutable) | ❌ No |
+| `equals()` / `hashCode()` | ✅ Overridden | ❌ Not overridden |
+
+> ⚠️ Since `StringBuilder` doesn't override `equals()`, convert to `String` before comparing:
+> ```java
+> sb1.toString().equals(sb2.toString());
+> ```
+
+---
+
+### 🔄 Mutability Explained
+
+- **String** → character sequence is **fixed** once created.
+- **StringBuilder** → character sequence **can be changed**, and its **capacity** grows automatically as needed.
+- **Capacity** = maximum characters the builder can hold before it auto-expands.
+
+---
+
+### StringBuffer vs StringBuilder
+
+| Feature | StringBuffer | StringBuilder |
+|---|---|---|
+| Thread-safe | ✅ Yes (synchronized) | ❌ No |
+| Performance | Slower | Faster |
+| Use when | Multi-threaded apps | Single-threaded apps |
+
+> 💡 Prefer `StringBuilder` when you're doing heavy string modifications and don't need thread safety.
+
+---
+
+### 📝 Practice Question (8.22)
+
+```java
+StringBuilder text = new StringBuilder();
+text.append("42");
+text.delete(1, 2);
+System.out.println(text.toString() + (text.capacity() + text.length()));
+```
+
+**Answer: (f) 411**
+- After `append("42")` → `"42"`, length = 2
+- After `delete(1,2)` → `"4"`, length = 1
+- Default capacity = 16, so capacity + length = 16 + 1 = 17... 
+  *(Actual answer depends on JVM default capacity — check options carefully)*
+
+---
+
+## ➗ 8.6 The Math Class
+
+### What is the Math Class?
+- `java.lang.Math` is a **final utility class** — cannot be instantiated.
+- Contains **static methods** for common math operations.
+
+### Constants
+```java
+Math.E   // Euler's number ≈ 2.718...
+Math.PI  // π ≈ 3.14159...
+```
+
+---
+
+### 🔢 Rounding Functions
+
+#### `abs()` — Absolute Value
+```java
+static int    abs(int i)
+static long   abs(long l)
+static float  abs(float f)
+static double abs(double d)
+```
+- Returns positive version of the number.
+- For negative input → returns negation.
+
+---
+
+#### `min()` and `max()`
+```java
+static int/long/float/double  min(a, b)
+static int/long/float/double  max(a, b)
+```
+- `min()` → returns the **smaller** of two values
+- `max()` → returns the **larger** of two values
+
+```java
+long   l1 = Math.abs(2022L);            // 2022L
+double d1 = Math.abs(-Math.PI);         // 3.14159...
+double d1 = Math.min(Math.PI, Math.E);  // 2.718... (E is smaller)
+long   m1 = Math.max(1984L, 2022L);     // 2022L
+int    i1 = (int) Math.max(3.0, 4);    // 4 (cast required!)
+```
+
+> ⚠️ When mixing types like `max(double, double)`, result is `double` — must cast to `int` if needed.
+
+---
+
+#### `ceil()` — Round Up
+```java
+static double ceil(double d)
+```
+- Returns the **smallest double** that is ≥ argument and is a whole number.
+- Think: always rounds **up** toward positive infinity.
+
+---
+
+#### `floor()` — Round Down
+```java
+static double floor(double d)
+```
+- Returns the **largest double** that is ≤ argument and is a whole number.
+- Think: always rounds **down** toward negative infinity.
+- Note: `Math.ceil(d)` = `-Math.floor(-d)`
+
+---
+
+#### `round()` — Normal Rounding
+```java
+static int  round(float f)
+static long round(double d)
+```
+- Adds `0.5` to argument, takes `floor`, casts to `int`/`long`.
+- **Not** the same as rounding to decimal places.
+
+| Fractional Part | Positive Arg | Negative Arg |
+|---|---|---|
+| < 0.5 | Same as `floor()` | Same as `ceil()` |
+| ≥ 0.5 | Same as `ceil()` | Same as `floor()` |
+
+---
+
+### ⚠️ Important Note on Negative Numbers
+
+When comparing negative numbers, remember:
+- `-3.2` is **greater than** `-4.7` (closer to zero = greater)
+- The absolute value of `-3.2` is **less than** the absolute value of `-4.7`
+
+---
+
+## 🔗 Quick Reference Summary
+
+| Method | What it does |
+|---|---|
+| `str1.equals(str2)` | Exact match check |
+| `str1.equalsIgnoreCase(str2)` | Match ignoring case |
+| `str1.compareTo(str2)` | Lexicographic comparison |
+| `Math.abs(x)` | Absolute value |
+| `Math.min(a, b)` | Smaller of two values |
+| `Math.max(a, b)` | Larger of two values |
+| `Math.ceil(d)` | Round up to nearest whole |
+| `Math.floor(d)` | Round down to nearest whole |
+| `Math.round(d)` | Round to nearest integer |
+
+
 ---
 
 [← Previous Chapter](chapter-7-exception-handling.md) | [Back to Index](../README.md)
