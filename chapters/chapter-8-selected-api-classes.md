@@ -563,4 +563,226 @@ When comparing negative numbers, remember:
 
 ---
 
+## 8.7 The Random Class 🎲
+ 
+### Why Do We Need Random Numbers?
+ 
+In **games, simulations, and apps**, we often need random numbers.
+ 
+**Example:** Rolling a dice 🎲 — we need a number between **1 and 6**, and each number should have an **equal chance** (1/6 probability) of appearing.
+ 
+---
+ 
+### Real Random vs Pseudorandom
+ 
+> A computer **cannot truly pick randomly** — it can only compute (calculate) values.
+ 
+So instead, Java uses **pseudorandom numbers** — numbers that are **not truly random**, but are calculated using smart mathematical formulas that *look* random.
+ 
+| Type | Meaning |
+|---|---|
+| **True Random** | Completely unpredictable — impossible for a computer |
+| **Pseudorandom** | Calculated sequence that closely approximates randomness |
+ 
+> 💡 A lot of research has gone into finding good mathematical formulas for pseudorandom numbers.
+ 
+---
+ 
+### The `Random` Class in Java
+ 
+The `java.util.Random` class implements the `java.util.random.RandomGenerator` interface — the common protocol for all **Pseudorandom Number Generators (PRNGs)** in Java.
+ 
+#### Creating a Random Object
+ 
+```java
+Random generator = new Random();         // no seed (different each run)
+Random generator = new Random(long seed); // with seed (same sequence every run)
+```
+ 
+---
+ 
+### What is a Seed? 🌱
+ 
+> A **seed** is a starting number that the Random class uses to calculate the sequence.
+ 
+- **Same seed** → same sequence of random numbers every time
+- **No seed** → different numbers each run (uses system time as seed)
+- Seeds are usually **prime numbers** (numbers only divisible by 1 and themselves) because they produce better pseudorandom sequences
+ 
+```java
+Random generator = new Random(31); // seed = 31 (a prime number)
+```
+ 
+---
+ 
+### Methods to Get Random Values
+ 
+Call these methods on a `Random` object to get the next random value:
+ 
+| Method | Returns |
+|---|---|
+| `nextInt()` | Random `int` in full range [-2³¹, 2³¹-1] |
+| `nextInt(int bound)` | Random `int` between **0** and **bound** (exclusive) |
+| `nextLong()` | Random `long` |
+| `nextFloat()` | Random `float` between **0.0f** and **1.0f** (exclusive) |
+| `nextDouble()` | Random `double` between **0.0d** and **1.0d** (exclusive) |
+| `nextBoolean()` | Random `true` or `false` |
+ 
+---
+ 
+### Example — Simulating a Dice Roll 🎲
+ 
+```java
+Random generator = new Random();
+ 
+// Get a random int (any range)
+int number = generator.nextInt();
+ 
+// Get a dice value between 1 and 6:
+// Step 1: nextInt(6) gives 0,1,2,3,4,5
+// Step 2: multiply by 6 → 0.0 to 5.9...
+// Step 3: add offset 1 → 1 to 6
+int dice = generator.nextInt(6) + 1;
+```
+ 
+**What `nextInt(6)` can produce:**
+```
+{0, 1, 2, 3, 4, 5}   → add 1 →   {1, 2, 3, 4, 5, 6} ✅
+```
+ 
+---
+ 
+### Key Points to Remember 📌
+ 
+- Each call to `nextInt()` returns the **next** value in the pseudorandom sequence
+- Without a seed → unpredictable (good for games)
+- With a seed → reproducible (good for testing)
+- The sequence is **uniformly distributed** — each value has equal probability
+ 
+---
+ 
+## 8.8 Using Big Numbers 🔢
+ 
+### Why Do We Need Big Numbers?
+ 
+Normal `int`, `long`, and `double` types have **limited precision** (fixed size).
+ 
+For **financial calculations** (money 💰), rounding errors can add up and cause **big mistakes**. We need **exact, high-precision** numbers.
+ 
+> Example: Calculating bank interest on millions of transactions — even a tiny rounding error multiplied thousands of times becomes significant.
+ 
+---
+ 
+### Big Number Classes in Java
+ 
+Both classes are in the **`java.math`** package and extend `java.lang.Number`:
+ 
+| Class | What it does |
+|---|---|
+| **`BigDecimal`** | Immutable, arbitrary-precision **decimal numbers** (e.g., 3.14159...) |
+| **`BigInteger`** | Immutable, arbitrary-precision **whole numbers** (integers) |
+ 
+> 💡 **Arbitrary-precision** = can be as large or as precise as needed — no size limit!
+ 
+---
+ 
+## BigDecimal 💰
+ 
+### How BigDecimal Works Internally
+ 
+A `BigDecimal` is stored as two parts:
+- **Unscaled value** → the actual digits (without decimal point)
+- **Scale** → how many digits are to the right of the decimal point
+ 
+```
+BigDecimal 3.14
+  → unscaled value = 314
+  → scale = 2
+ 
+BigDecimal -3.1415
+  → unscaled value = -31415
+  → scale = 4
+```
+ 
+### BigDecimal Constants
+ 
+Ready-made constant values provided by the class:
+ 
+```java
+BigDecimal.ZERO   // represents 0
+BigDecimal.ONE    // represents 1
+BigDecimal.TEN    // represents 10
+```
+*(All represented with scale = 0)*
+ 
+### What Can BigDecimal Do?
+ 
+- Represent **very large** and **very small** decimal numbers
+- **Full control over rounding** behaviour during arithmetic
+- **Convert** to different representations
+- **Compare** BigDecimal values accurately
+- Perfect for **financial/monetary calculations**
+ 
+---
+ 
+## BigInteger 🔢
+ 
+### How BigInteger Works Internally
+ 
+- Stores an arbitrary-precision **signed integer** in base 10
+- Internally uses **two's-complement notation** (stored as an array of `int` values)
+- Has methods **similar to BigDecimal** for arithmetic, conversions, and comparison
+ 
+```java
+BigInteger bigNum = new BigInteger("123456789012345678901234567890");
+// This number is WAY too large for a regular int or long!
+```
+ 
+---
+ 
+### BigDecimal vs BigInteger — Quick Comparison
+ 
+| Feature | BigDecimal | BigInteger |
+|---|---|---|
+| Type of number | Decimal (with fractional part) | Whole numbers only |
+| Use case | Money, scientific precision | Huge integers, cryptography |
+| Precision | Arbitrary (unlimited digits) | Arbitrary (unlimited digits) |
+| Immutable? | ✅ Yes | ✅ Yes |
+| Package | `java.math` | `java.math` |
+ 
+---
+ 
+### BigDecimal vs double — Why Use BigDecimal?
+ 
+```java
+// ❌ double — loses precision!
+double a = 0.1 + 0.2;
+System.out.println(a); // 0.30000000000000004 😱
+ 
+// ✅ BigDecimal — exact result!
+BigDecimal x = new BigDecimal("0.1");
+BigDecimal y = new BigDecimal("0.2");
+System.out.println(x.add(y)); // 0.3 ✅
+```
+ 
+> ⚠️ Always use **String constructor** (`new BigDecimal("0.1")`) not double constructor (`new BigDecimal(0.1)`) to avoid precision issues!
+ 
+---
+ 
+## Quick Reference Summary 📋
+ 
+| Concept | Key Point |
+|---|---|
+| **Random class** | Generates pseudorandom numbers using math formulas |
+| **Pseudorandom** | Looks random but is actually calculated |
+| **Seed** | Starting value — same seed = same sequence |
+| **`nextInt(n)`** | Random int from 0 to n-1 |
+| **Dice roll formula** | `nextInt(6) + 1` gives 1–6 |
+| **BigDecimal** | High-precision decimal numbers (great for money) |
+| **BigInteger** | High-precision whole numbers (no size limit) |
+| **Scale** | Number of digits after decimal point in BigDecimal |
+| **Both are immutable** | Cannot be changed after creation |
+ 
+---
+
 [← Previous Chapter](chapter-7-exception-handling.md) | [Back to Index](../README.md)
