@@ -16,6 +16,7 @@
 | 6 | [Access Control](chapters/chapter-6-access-control.md) | Encapsulation, Packages, Source File Structure, Access Modifiers |
 | 7 | [Exception Handling](chapters/chapter-7-exception-handling.md) | Stack Execution, Exception Types, Checked vs Unchecked, Error Class |
 | 8 | [Selected API Classes](chapters/chapter-8-selected-api-classes.md) | java.lang Package, Object Class, Wrapper Classes, String Class |
+| 9 | [Nested Type Declarations](chapters/chapter-9-nested-type-declarations.md) | Static Member Types, Inner Classes, Local Classes, Anonymous Classes |
 
 ---
 
@@ -44,6 +45,9 @@ Covers how Java handles unexpected events using the **throw-and-catch** model. E
 
 ### [Chapter 8 — Selected API Classes](chapters/chapter-8-selected-api-classes.md)
 Introduces the **`java.lang` package** and its key classes. Covers the **`Object` class** (root of all Java classes) and its core methods, **wrapper classes** (boxing/unboxing, `Integer`, `Double`, etc.), and the **`String` class** in depth — immutability, string pool/interning, constructors, and the most useful string methods.
+
+### [Chapter 9 — Nested Type Declarations](chapters/chapter-9-nested-type-declarations.md)
+Covers types declared **inside** other types. Explains the three categories of nested types: **static member types** (behave like top-level types, no outer instance needed), **non-static member classes / inner classes** (tied to an enclosing object, great for data structures), and **local classes** (defined inside a method or block, scoped like a local variable). Includes comparison tables and code examples throughout.
 
 ---
 
@@ -77,6 +81,9 @@ Introduces the **`java.lang` package** and its key classes. Covers the **`Object
 | Checked vs Unchecked | [Ch. 7](chapters/chapter-7-exception-handling.md#checked-vs-unchecked-exceptions) |
 | Wrapper Classes & Boxing | [Ch. 8](chapters/chapter-8-selected-api-classes.md#83-the-wrapper-classes) |
 | String Methods | [Ch. 8](chapters/chapter-8-selected-api-classes.md#84-the-string-class) |
+| Static Member Types | [Ch. 9](chapters/chapter-9-nested-type-declarations.md#92-static-member-types) |
+| Inner Classes | [Ch. 9](chapters/chapter-9-nested-type-declarations.md#93-non-static-member-classes-inner-classes) |
+| Local Classes | [Ch. 9](chapters/chapter-9-nested-type-declarations.md#94-local-classes) |
 
 ---
 
