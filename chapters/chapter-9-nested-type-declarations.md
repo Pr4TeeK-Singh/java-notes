@@ -203,14 +203,121 @@ class Top {
 
 ---
 
+## 9.5 Static Local Types
+
+### What Are They?
+
+You can declare **local interfaces**, **local enum types**, and **local record classes** inside a block. These are called **static local types**.
+
+> ⚠️ These are **not the same** as a local class declared in a static context. Static local types are *always* implicitly `static`.
+
+### Key Points
+
+- Local **interfaces**, **enums**, and **records** declared inside a block → implicitly `static`
+- Local **classes** are never `static` (unless declared inside a static method — then they behave like static, but are not truly static local types)
+
+### What "implicitly static" means for these types:
+
+| Implication | Detail |
+|---|---|
+| No outer instance needed | Can be instantiated with `new` directly (for record classes) |
+| Can only access `static` members of enclosing class | ❌ Cannot access non-static (instance) fields |
+| Interfaces and enums | Cannot be instantiated with `new` anyway |
+
+### Example
+
+```java
+class Outer {
+    static int count = 10;       // static field
+    int value = 99;              // non-static field
+
+    void method() {
+        record Point(int x, int y) { }  // Static local record class
+
+        Point p = new Point(1, 2);      // ✅ No outer instance needed
+        System.out.println(count);      // ✅ Can access static field
+        // System.out.println(value);   // ❌ Cannot access non-static field
+    }
+}
+```
+
+---
+
+## 9.6 Anonymous Classes
+
+### What Are They?
+
+An **anonymous class** combines **defining** and **instantiating** a class into a **single step** — with no name!
+
+- Defined right where they are used (inline)
+- No name → can only create **one instance** at the point of definition
+- Like local classes — can be used in both static and non-static contexts
+
+### Key Rules
+
+| Rule | Detail |
+|---|---|
+| Has a name? | ❌ No — that's why it's "anonymous" |
+| Access modifier | ❌ Not allowed |
+| `static` / `final` / `abstract` | ❌ Not allowed |
+| Can extend a class? | ✅ Yes |
+| Can implement an interface? | ✅ Yes |
+| Constructors | ❌ Cannot define (no name!) — use instance initializer instead |
+
+### When to Use Anonymous Classes?
+
+Typically used for **one-off, short-lived** implementations:
+- Event listeners in GUI apps
+- Simple thread tasks (`Runnable`)
+- Comparators for sorting objects
+
+### Syntax — Extending a Class
+
+```java
+new SuperclassName(optional_constructor_args) {
+    // member declarations — override methods here
+};
+```
+
+### Syntax — Implementing an Interface
+
+```java
+new InterfaceName() {
+    // must implement all abstract methods
+};
+```
+
+### Example
+
+```java
+// Instead of creating a whole new class, do it inline:
+Runnable r = new Runnable() {
+    @Override
+    public void run() {
+        System.out.println("Running anonymously!");
+    }
+};
+r.run();
+```
+
+### Important Notes
+
+- No `extends` keyword — the superclass/interface name is written after `new`
+- If extending an **abstract class** → must implement all abstract methods
+- The statement ends with a **semicolon (`;`)** after the closing brace `}`
+- Members of the anonymous class are only accessible via the object reference, which must be of a supertype
+
+---
+
 ## Summary — All Nested Type Categories
 
 | Type | `static` keyword | Needs Outer Instance | Where Defined | Access Modifier |
 |---|---|---|---|---|
 | Static Member Class | ✅ Yes | ❌ No | Inside a class/interface | Any |
 | Non-Static Member Class (Inner) | ❌ No | ✅ Yes | Inside a class | Any |
-| Local Class | ❌ No (not allowed) | Depends on context | Inside a block | ❌ None allowed |
-| Anonymous Class | ❌ No | Depends on context | Inline in expression | ❌ None allowed |
+| Local Class | ❌ Not allowed | Depends on context | Inside a block | ❌ None |
+| Static Local Type (interface/enum/record) | Implicitly ✅ | ❌ No | Inside a block | ❌ None |
+| Anonymous Class | ❌ Not allowed | Depends on context | Inline expression | ❌ None |
 
 ---
 
