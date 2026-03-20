@@ -17,6 +17,7 @@
 | 7 | [Exception Handling](chapters/chapter-7-exception-handling.md) | Stack Execution, Exception Types, Checked vs Unchecked, Error Class |
 | 8 | [Selected API Classes](chapters/chapter-8-selected-api-classes.md) | java.lang Package, Object Class, Wrapper Classes, String Class |
 | 9 | [Nested Type Declarations](chapters/chapter-9-nested-type-declarations.md) | Static Member Types, Inner Classes, Local Classes, Anonymous Classes |
+| 10 | [Object Lifetime](chapters/chapter-10-object-lifetime.md) | Garbage Collection, Reachable Objects, Facilitating GC, Initializers, Field Initializers |
 
 ---
 
@@ -48,6 +49,9 @@ Introduces the **`java.lang` package** and its key classes. Covers the **`Object
 
 ### [Chapter 9 — Nested Type Declarations](chapters/chapter-9-nested-type-declarations.md)
 Covers types declared **inside** other types. Explains the three categories of nested types: **static member types** (behave like top-level types, no outer instance needed), **non-static member classes / inner classes** (tied to an enclosing object, great for data structures), and **local classes** (defined inside a method or block, scoped like a local variable). Includes comparison tables and code examples throughout.
+
+### [Chapter 10 — Object Lifetime](chapters/chapter-10-object-lifetime.md)
+Covers how Java manages memory automatically. Explains **garbage collection** and how the JVM reclaims unused objects, what makes an object **reachable vs unreachable**, and practical tips for **facilitating garbage collection** (nulling references, try-with-resources). Also introduces the three kinds of **initializers** — field initializer expressions, static initializer blocks, and instance initializer blocks — and covers **field initializer expressions** in detail.
 
 ---
 
@@ -84,6 +88,10 @@ Covers types declared **inside** other types. Explains the three categories of n
 | Static Member Types | [Ch. 9](chapters/chapter-9-nested-type-declarations.md#92-static-member-types) |
 | Inner Classes | [Ch. 9](chapters/chapter-9-nested-type-declarations.md#93-non-static-member-classes-inner-classes) |
 | Local Classes | [Ch. 9](chapters/chapter-9-nested-type-declarations.md#94-local-classes) |
+| Garbage Collection | [Ch. 10](chapters/chapter-10-object-lifetime.md#101-garbage-collection) |
+| Reachable Objects | [Ch. 10](chapters/chapter-10-object-lifetime.md#102-reachable-objects) |
+| Initializers | [Ch. 10](chapters/chapter-10-object-lifetime.md#105-initializers) |
+| Field Initializer Expressions | [Ch. 10](chapters/chapter-10-object-lifetime.md#106-field-initializer-expressions) |
 
 ---
 
