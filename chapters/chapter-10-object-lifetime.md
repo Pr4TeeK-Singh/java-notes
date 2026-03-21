@@ -103,6 +103,10 @@ try (FileReader reader = new FileReader("file.txt")) {
 
 ---
 
+> 📌 *Section 10.4 (Object Finalization) — notes coming soon.*
+
+---
+
 ## 10.5 Initializers
 
 ### What Are Initializers?
@@ -175,6 +179,118 @@ class Counter {
 
 ---
 
+## 10.6.1 — Exception Handling and Initializer Expressions
+
+### The Rule — Simple Version
+> Field initializer expressions **must not throw a checked exception** that goes uncaught.
+
+If a method called inside a field initializer can throw a **checked exception**, that exception must be **caught and handled inside the method itself** — you cannot let it bubble up from the initializer.
+
+### Why?
+The initializer expression has **no way to declare a `throws` clause** — so the compiler will complain if a checked exception could escape.
+
+### Checked vs Unchecked in Initializers
+
+| Exception Type | In Field Initializer | In Instance Initializer (anonymous class) |
+|---|---|---|
+| Checked exception | ❌ Must be caught inside | ✅ Allowed (more freedom) |
+| Unchecked exception | ✅ Can propagate | ✅ Can propagate |
+
+### Example
+
+```java
+// ✅ CORRECT — checked exception caught inside the method
+static HotelPool pool = createHotelPool();  // field initializer calls method
+
+static HotelPool createHotelPool() {
+    try {
+        // ... code that throws TooManyHotelsException (checked)
+    } catch (TooManyHotelsException e) {
+        // handled here ✅
+    }
+    return pool;
+}
+
+// ❌ WRONG — if createHotelPool() used 'throws' instead of try-catch,
+// the field initializer would need to handle it — but it can't!
+```
+
+---
+
+> 📌 *Section 10.7 (Static Initializer Blocks) — notes coming soon.*
+
+---
+
+## 10.8 Instance Initializer Blocks
+
+### What Are They?
+An **instance initializer block** is a block of code `{ }` written directly inside a class (not inside any method or constructor). It runs **every time a new object is created**.
+
+Think of it as extra setup code that runs automatically before or alongside a constructor.
+
+### Syntax
+
+```java
+class InstanceInitializers {
+    long[] squares = new long[10];    // (1) Field initializer
+
+    // (2) Instance Initializer Block
+    {
+        for (int i = 0; i < squares.length; i++)
+            squares[i] = i * i;       // fills array with 0,1,4,9,16...
+    }
+}
+```
+
+### Key Rules
+
+| Rule | Detail |
+|---|---|
+| When does it run? | Every time an object of the class is created |
+| Where is it? | Directly in the class body — NOT inside a method |
+| Can a class have multiple? | ✅ Yes — executed top to bottom in order |
+| Order of execution | Field initializers + instance blocks run in the order declared |
+| Purpose | Complex initialization that can't fit in a single expression |
+
+### When to Use?
+
+- When you need **loops or complex logic** to set up a field (can't do this with a simple `=` expression)
+- For **anonymous classes** (which can't have constructors) — instance initializer blocks are the only way to do constructor-like setup
+
+---
+
+## 10.8.1 — Exception Handling in Instance Initializer Blocks
+
+### How It Differs from Field Initializer Expressions
+
+| Feature | Field Initializer Expression | Instance Initializer Block |
+|---|---|---|
+| Checked exceptions allowed? | ❌ Must be caught inside | ✅ Can propagate — but every constructor must declare it in `throws` |
+| Unchecked exceptions | ✅ Can propagate | ✅ Can propagate |
+| In anonymous classes | — | ✅ Even more freedom — no constructors involved |
+
+### The Rule in Simple Words
+- In an **instance initializer block**, a checked exception CAN be thrown — but then **every constructor** in the class must also declare that exception in its `throws` clause.
+- In a **static initializer block**, an uncaught checked exception will cause a compile error.
+- In **anonymous classes**, instance initializer blocks have the most freedom since there are no constructors.
+
+### Example
+
+```java
+class MyClass {
+    {
+        // Instance initializer block that throws checked exception
+        if (someCondition)
+            throw new SomeCheckedException();  // ✅ allowed IF...
+    }
+
+    MyClass() throws SomeCheckedException {    // ...every constructor declares it
+    }
+}
+```
+
+---
+
 ## Chapter 10 — Quick Summary
 
 | Section | Topic | Key Idea |
@@ -182,8 +298,13 @@ class Counter {
 | 10.1 | Garbage Collection | Java auto-manages memory; GC reclaims unused objects |
 | 10.2 | Reachable Objects | Object is alive if reachable; unreachable = eligible for GC |
 | 10.3 | Facilitating GC | Null references, use try-with-resources, release early |
+| 10.4 | Object Finalization | *(notes coming soon)* |
 | 10.5 | Initializers | 3 types: field expression, static block, instance block |
 | 10.6 | Field Initializer Expressions | Set field values inline at declaration |
+| 10.6.1 | Exception Handling in Field Initializers | Checked exceptions must be caught inside — can't escape initializer |
+| 10.7 | Static Initializer Blocks | *(notes coming soon)* |
+| 10.8 | Instance Initializer Blocks | Runs on every object creation; useful for complex/loop-based setup |
+| 10.8.1 | Exception Handling in Instance Blocks | Checked exceptions allowed if every constructor declares `throws` |
 
 ---
 
