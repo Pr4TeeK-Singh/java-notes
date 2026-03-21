@@ -308,4 +308,4 @@ class MyClass {
 
 ---
 
-*Back to [README](../README.md)*
+[← Previous Chapter](chapter-9-nested-type-declarations.md) | [Back to Index](../README.md)
