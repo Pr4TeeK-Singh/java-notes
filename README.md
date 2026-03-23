@@ -18,6 +18,7 @@
 | 8 | [Selected API Classes](chapters/chapter-8-selected-api-classes.md) | java.lang Package, Object Class, Wrapper Classes, String Class |
 | 9 | [Nested Type Declarations](chapters/chapter-9-nested-type-declarations.md) | Static Member Types, Inner Classes, Local Classes, Anonymous Classes |
 | 10 | [Object Lifetime](chapters/chapter-10-object-lifetime.md) | Garbage Collection, Reachable Objects, Facilitating GC, Initializers, Field Initializers |
+| 11 | [Generics](chapters/chapter-11-generics.md) | Introducing Generics, Generic Types, Parameterized Types, Generic Interfaces |
 
 ---
 
@@ -51,7 +52,10 @@ Introduces the **`java.lang` package** and its key classes. Covers the **`Object
 Covers types declared **inside** other types. Explains the three categories of nested types: **static member types** (behave like top-level types, no outer instance needed), **non-static member classes / inner classes** (tied to an enclosing object, great for data structures), and **local classes** (defined inside a method or block, scoped like a local variable). Includes comparison tables and code examples throughout.
 
 ### [Chapter 10 — Object Lifetime](chapters/chapter-10-object-lifetime.md)
-Covers how Java manages memory automatically. Explains **garbage collection** and how the JVM reclaims unused objects, what makes an object **reachable vs unreachable**, and practical tips for **facilitating garbage collection** (nulling references, try-with-resources). Also introduces the three kinds of **initializers** — field initializer expressions, static initializer blocks, and instance initializer blocks — and covers **field initializer expressions** in detail.
+Covers how Java manages memory automatically. Explains **garbage collection** and how the JVM reclaims unused objects, what makes an object **reachable vs unreachable**, and practical tips for **facilitating garbage collection** (nulling references, try-with-resources). Also introduces the three kinds of **initializers** — field initializer expressions, static initializer blocks, and instance initializer blocks — covers **field initializer expressions** in detail including exception handling rules, and explains **instance initializer blocks** (runs on every object creation, useful for complex setup and anonymous classes).
+
+### [Chapter 11 — Generics](chapters/chapter-11-generics.md)
+Introduces **generics** — Java's way of writing type-safe, reusable code. Covers **generic types** (classes and interfaces with type parameters like `<E>`), **parameterized types** (supplying actual types like `Node<Integer>`), the **diamond operator `<>`**, and **generic interfaces** with both generic and non-generic implementations. Includes real examples and comparison tables throughout.
 
 ---
 
@@ -92,6 +96,11 @@ Covers how Java manages memory automatically. Explains **garbage collection** an
 | Reachable Objects | [Ch. 10](chapters/chapter-10-object-lifetime.md#102-reachable-objects) |
 | Initializers | [Ch. 10](chapters/chapter-10-object-lifetime.md#105-initializers) |
 | Field Initializer Expressions | [Ch. 10](chapters/chapter-10-object-lifetime.md#106-field-initializer-expressions) |
+| Instance Initializer Blocks | [Ch. 10](chapters/chapter-10-object-lifetime.md#108-instance-initializer-blocks) |
+| Exception Handling in Initializers | [Ch. 10](chapters/chapter-10-object-lifetime.md#108-cont--exception-handling-in-instance-initializer-blocks) |
+| Generics Introduction | [Ch. 11](chapters/chapter-11-generics.md#111-introducing-generics) |
+| Generic Types & Parameters | [Ch. 11](chapters/chapter-11-generics.md#112-generic-types-and-parameterized-types) |
+| Generic Interfaces | [Ch. 11](chapters/chapter-11-generics.md#part-c--generic-interfaces) |
 
 ---
 
