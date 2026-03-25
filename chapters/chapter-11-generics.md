@@ -181,6 +181,196 @@ class LymphNode implements IMonoLink<Lymph> {  // Lymph is a concrete type
 
 ---
 
+## 11.3 Collections and Generics
+
+### The Problem — Before Generics
+Before Java 1.5, collections like `ArrayList` could hold **any object** — no type-checking at all. This caused problems:
+
+```java
+// OLD WAY — no generics
+List wordList = new ArrayList();        // Can add ANYTHING
+wordList.add("two zero two zero");      // ✅ String added
+wordList.add(2020);                     // ✅ Integer added — no error!
+
+Object element = wordList.get(0);      // Returns just "Object" — you don't know the type
+if (element instanceof String str) {   // Had to do runtime type check to avoid crash
+    // use str
+}
+```
+
+Problems:
+- ❌ No compile-time type checking
+- ❌ Required manual casting and `instanceof` checks
+- ❌ Easy to accidentally put the wrong type in
+
+### The Fix — With Generics
+
+```java
+// NEW WAY — with generics
+List<String> wordList = new ArrayList<>();  // Only Strings allowed!
+wordList.add("two zero two zero");          // ✅ OK
+wordList.add(2020);                         // ❌ Compile-time error — caught early!
+
+String element = wordList.get(0);          // Always returns a String — no cast needed!
+```
+
+### Before vs After Comparison
+
+| Feature | Without Generics | With Generics |
+|---|---|---|
+| Type checking | ❌ Runtime only | ✅ Compile time |
+| Casting needed? | ✅ Yes — manual | ❌ No — compiler handles it |
+| Wrong type caught? | ❌ Only at runtime (crash!) | ✅ At compile time |
+| Code clarity | ❌ Harder to read | ✅ Clear what type is expected |
+
+> 💡 **Key Idea:** With generics, `ArrayList<String>` is still a generic implementation under the hood, but its *usage* is specific — it can only hold Strings.
+
+---
+
+## 11.4 Wildcards
+
+### The Subtype Problem with Parameterized Types
+
+Here's a surprising thing about generics — **`Node<Integer>` is NOT a subtype of `Node<Number>`**, even though `Integer` IS a subtype of `Number`.
+
+```java
+Node<Integer> intNode    = new Node<>(2020, null);   // (1)
+Node<Double>  doubleNode = new Node<>(3.14, null);   // (2)
+Node<Number>  numNode    = new Node<>(2021, null);   // (3)
+
+// These WORK — Integer and Double are subtypes of Number:
+numNode.setData(10.5);   // ✅ (4) Double is a Number
+numNode.setData(2022);   // ✅ (5) Integer is a Number
+
+// These FAIL — parameterized types are NOT covariant:
+numNode.setNext(intNode);                        // ❌ (6) Compile error!
+numNode = new Node<Number>(2030, doubleNode);    // ❌ (7) Compile error!
+numNode = intNode;                               // ❌ (8) Compile error!
+numNode = doubleNode;                            // ❌ (9) Compile error!
+```
+
+### Why Does This Happen?
+
+> `Node<Integer>` and `Node<Double>` are **NOT subtypes** of `Node<Number>` — they are completely separate types.
+
+This is intentional! If `Node<Integer>` were a subtype of `Node<Number>`, you could accidentally store a `Double` into a `Node<Integer>` through a `Node<Number>` reference — breaking type safety.
+
+### Arrays vs Generics — The Difference
+
+| Feature | Arrays | Parameterized Types |
+|---|---|---|
+| `Integer[]` subtype of `Number[]`? | ✅ Yes (covariant) | ❌ No (invariant) |
+| Type-safe? | ❌ Not always (runtime error possible) | ✅ Always (compile-time safe) |
+
+### The Solution — Wildcards `?`
+
+To handle this flexibility issue, Java provides **wildcards** using `?`:
+
+| Wildcard | Meaning | Use When |
+|---|---|---|
+| `?` | Any type (unknown) | Read-only — you don't know/care what type |
+| `? extends T` | Any subtype of T | Reading — upper bounded wildcard |
+| `? super T` | Any supertype of T | Writing — lower bounded wildcard |
+
+```java
+// Without wildcard — too restrictive:
+void printNode(Node<Number> n) { }   // Only accepts Node<Number>, NOT Node<Integer>!
+
+// With wildcard — flexible:
+void printNode(Node<? extends Number> n) { }  // ✅ Accepts Node<Integer>, Node<Double>, etc.
+```
+
+---
+
+## 11.4 (cont.) — Implementing a Simplified Generic Stack
+
+### What This Demonstrates
+A **generic stack** (`MyStack<E>`) is a great real-world example of generics in action. It works with **any type** — `MyStack<Integer>`, `MyStack<String>`, etc.
+
+### Generic Stack Interface
+
+```java
+public interface IStack<E> extends Iterable<E> {
+    void push(E element);         // Add element to top of stack
+    E pop();                      // Remove and return top element
+    E peek();                     // Look at top element without removing
+    int size();                   // Number of elements
+    boolean isEmpty();            // Is the stack empty?
+    boolean isMember(E element);  // Is element in the stack?
+    E[] toArray(E[] toArray);     // Copy stack to array
+    String toString();            // Text representation: (e1, e2, ..., en)
+}
+```
+
+### Key Points
+- `MyStack<E>` implements `IStack<E>` and uses `Node<E>` internally
+- `NodeIterator<E>` provides iteration so you can use the **enhanced for loop** `for(:)`
+- The stack is `Iterable<E>` → works with `for(E item : stack)`
+
+### Usage Example
+
+```java
+MyStack<Integer> stack = new MyStack<>();
+stack.push(1);
+stack.push(2);
+stack.push(3);
+
+for (int num : stack) {            // Works because MyStack<E> is Iterable<E>
+    System.out.println(num);
+}
+// Output: 3, 2, 1
+```
+
+---
+
+## 11.9 Type Erasure
+
+### What Is It?
+
+**Type erasure** is what happens when your Java generic code is compiled — the compiler **removes all type parameter information** and produces regular bytecode with no generics.
+
+> The JVM at runtime has **no idea** that generics were used. It just sees regular classes and objects.
+
+### Simple Analogy
+> Generics are like **labels on boxes** — they help you at packing time (compile time). But once the box is shipped (runtime), the label is gone. The JVM just sees a plain box.
+
+### How Type Erasure Works — The Rules
+
+The compiler replaces type parameters using these 3 rules:
+
+| Rule | What Happens | Example |
+|---|---|---|
+| **Rule 1** | Drop all `<...>` from parameterized types | `Node<Integer>` → `Node` |
+| **Rule 2a** | Replace type param with its **bound** (if it has one) | `<E extends Comparable>` → `Comparable` |
+| **Rule 2b** | Replace type param with **`Object`** (if no bound) | `<E>` → `Object` |
+| **Rule 2c** | Replace with **first bound** (if multiple bounds) | `<E extends A & B>` → `A` |
+
+### Before and After Erasure
+
+```java
+// BEFORE erasure (your source code):
+class Node<E> {
+    private E data;
+    public E getData() { return data; }
+    public void setData(E d) { this.data = d; }
+}
+
+// AFTER erasure (what the compiler produces):
+class Node {
+    private Object data;            // E → Object (no bound)
+    public Object getData() { return data; }
+    public void setData(Object d) { this.data = d; }
+}
+```
+
+### Why Does This Matter?
+
+- You **cannot** use a type parameter at runtime (e.g., `new E()` or `instanceof E` → compile error)
+- Generic types are checked at **compile time only**
+- **Bridge methods** are sometimes inserted by the compiler to maintain backward compatibility with old (pre-generics) code
+
+---
+
 ## Chapter 11 — Quick Summary
 
 | Section | Topic | Key Idea |
@@ -189,6 +379,10 @@ class LymphNode implements IMonoLink<Lymph> {  // Lymph is a concrete type
 | 11.2A | Generic Types | Class/interface with type parameter `<E>` as a placeholder |
 | 11.2B | Parameterized Types | Supply actual type: `Node<Integer>` — compiler enforces it |
 | 11.2C | Generic Interfaces | Interfaces can also have type parameters; implemented generically or concretely |
+| 11.3 | Collections and Generics | Before generics: unsafe, needed casts; after: type-safe, clean |
+| 11.4 | Wildcards | `Node<Integer>` ≠ subtype of `Node<Number>`; use `?` wildcards for flexibility |
+| 11.4 (cont.) | Generic Stack Example | Real-world generic class using `IStack<E>` and `Node<E>` |
+| 11.9 | Type Erasure | Compiler removes all type info at compile time; JVM sees no generics |
 
 ---
 
