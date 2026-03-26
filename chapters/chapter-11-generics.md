@@ -37,7 +37,7 @@ Think of it like a **template** — you define the structure once, and plug in t
 
 ## 11.2 Generic Types and Parameterized Types
 
-### Part A — Generic Types
+### Generic Types
 
 #### What is a Generic Type?
 A **generic type** is a class or interface that has **one or more type parameters** (placeholders for actual types).
@@ -91,7 +91,7 @@ class Node<E> {
 
 ---
 
-### Part B — Parameterized Types
+### Parameterized Types
 
 #### What is a Parameterized Type?
 A **parameterized type** is when you take a generic type and **supply an actual type** for it.
@@ -133,7 +133,7 @@ Node<Integer> n = new Node<>(42, null);   // ✅ Shorter — compiler infers <In
 
 ---
 
-### Part C — Generic Interfaces
+### Generic Interfaces
 
 #### What Are They?
 Just like generic classes, **interfaces can also be generic** — declared the same way with type parameters.
@@ -282,7 +282,7 @@ void printNode(Node<? extends Number> n) { }  // ✅ Accepts Node<Integer>, Node
 
 ---
 
-## 11.4 (cont.) — Implementing a Simplified Generic Stack
+## 11.5 Implementing a Simplified Generic Stack
 
 ### What This Demonstrates
 A **generic stack** (`MyStack<E>`) is a great real-world example of generics in action. It works with **any type** — `MyStack<Integer>`, `MyStack<String>`, etc.
@@ -323,7 +323,7 @@ for (int num : stack) {            // Works because MyStack<E> is Iterable<E>
 
 ---
 
-## 11.9 Type Erasure
+## 11.6 Type Erasure
 
 ### What Is It?
 
@@ -371,18 +371,169 @@ class Node {
 
 ---
 
+## 11.7 Implications for Overloading and Overriding
+
+### Method Signatures — Quick Recap
+A **method signature** = method name + formal parameter list (types only, not names).
+
+Two methods are **override-equivalent** if:
+- Their signatures are the same, OR
+- One signature is a **subsignature** of the other (after type erasure they become the same)
+
+---
+
+### Implications for Overloading
+
+#### The Problem
+After **type erasure**, different generic method signatures can become identical — making it impossible to overload them.
+
+```java
+// These three look different before erasure:
+static <T> void merge(MyStack<T> s1, MyStack<T> s2)          { }
+static <T> void merge(MyStack<? extends T> s1, MyStack<T> s2) { }
+static <T> void merge(MyStack<? super T> s1, MyStack<T> s2)   { }
+
+// After erasure, ALL THREE become:
+//  merge(MyStack, MyStack)   ← same signature!
+// → Compile-time ERROR: cannot overload these methods
+```
+
+#### Key Rule
+> If two methods have the **same erased signature**, they **cannot be overloaded** in the same class — the compiler will report an error.
+
+---
+
+### Implications for Overriding
+
+#### Override Criteria for Generic Methods
+For a subtype method to correctly **override** a supertype method, these conditions must be satisfied:
+
+| Condition | Detail |
+|---|---|
+| **Signature** | The subtype method's signature must be a subsignature of the supertype method |
+| **Return type** | Must be **compatible** (same type or a subtype — covariant return) |
+| **`throws` clauses** | Must be **compatible** with the supertype's throws clause |
+
+#### Example — Wrong Override
+
+```java
+class CmpNode<E extends Comparable<E>> extends Node<E>
+    implements Comparable<CmpNode<E>> {
+
+    // ❌ WRONG — parameter type is wrong for overriding equals() from Object
+    // @Override
+    // boolean equals(CmpNode<E> other) { ... }   // Compile error!
+
+    // ✅ CORRECT — matches Object.equals(Object o)
+    @Override
+    public boolean equals(Object other) { ... }
+
+    // ✅ CORRECT — matches Comparable<CmpNode<E>>.compareTo()
+    @Override
+    public int compareTo(CmpNode<E> other) { ... }
+}
+```
+
+---
+
+### The `@Override` Annotation
+
+`@Override` is a **safety annotation** — if you write it above a method, the compiler checks that you are actually overriding something. If not, it gives a **compile error**.
+
+```java
+@Override
+public boolean equals(Object obj) { ... }   // ✅ Compiler confirms this overrides Object.equals
+
+@Override
+public boolean equals(String s) { ... }     // ❌ Compile error! — String ≠ Object, not a real override
+```
+
+> 💡 **Best practice:** Always use `@Override` when you intend to override a method — it catches typos and wrong parameter types immediately.
+
+---
+
+### Implications for Arrays
+
+#### The Core Issue
+Arrays support **subtype covariance** — `String[]` is a subtype of `Object[]`. But this can cause runtime problems with generics.
+
+```java
+String[] strArray = new String[] {"Hi", "Hello", "Howdy"};
+Object[] objArray = strArray;        // ✅ Compiles — covariant arrays
+objArray[0] = 2020.5;               // ❌ ArrayStoreException at RUNTIME!
+// (You stored a Double into a String array — caught only at runtime)
+```
+
+#### You Cannot Create Generic Arrays
+
+```java
+// T is a type parameter:
+T t = new T();        // ❌ Compile error — can't instantiate type parameter
+T[] anArray = new T[10];  // ❌ Compile error — can't create generic array
+
+// Also NOT allowed:
+List<String>[] list1 = new List<String>[3];       // ❌ Compile error
+List<String>[] list2 = new List[3];               // ⚠️ Unchecked warning
+```
+
+#### Why?
+At runtime, due to **type erasure**, the JVM can't verify the type of a generic array — this could silently allow wrong types to be stored, breaking type safety.
+
+#### Workaround
+Use a typed `List` instead of an array when working with generics:
+```java
+List<List<String>> listOfLists = new ArrayList<>();  // ✅ Preferred
+```
+
+---
+
+### Implications for Exception Handling
+
+When using generics with exceptions, these strict rules apply:
+
+| Rule | Detail | Example |
+|---|---|---|
+| Generic class cannot extend `Throwable` | ❌ Not allowed | `class MyException<T> extends Exception` → compile error |
+| Parameterized type in `catch` block | ❌ Not allowed | `catch (MyException<String> e)` → compile error |
+| Type in `catch` must be reifiable | ✅ Must be a concrete type | Only subtype of `Throwable` allowed |
+| Type in `throws` clause | ✅ Allowed if it's a subtype of `Throwable` | — |
+
+```java
+// ❌ Not allowed:
+class MyGenericException<T> extends Exception { }   // Compile error!
+
+// ❌ Not allowed in catch:
+try { ... }
+catch (SomeException<String> e) { ... }             // Compile error!
+
+// ✅ Allowed — type parameter in throws clause:
+<T extends Exception> void doSomething() throws T { ... }
+```
+
+#### Simple Reason
+Exceptions need to be checked at **runtime**, but generic types are erased at compile time — so the JVM can't distinguish between `MyException<String>` and `MyException<Integer>` at runtime, making them unusable in catch blocks.
+
+---
+
 ## Chapter 11 — Quick Summary
 
 | Section | Topic | Key Idea |
 |---|---|---|
 | 11.1 | Introducing Generics | Write once, use with any type; type-safe + no casting needed |
-| 11.2A | Generic Types | Class/interface with type parameter `<E>` as a placeholder |
-| 11.2B | Parameterized Types | Supply actual type: `Node<Integer>` — compiler enforces it |
-| 11.2C | Generic Interfaces | Interfaces can also have type parameters; implemented generically or concretely |
+| 11.2 | Generic Types | Class/interface with type parameter `<E>` as a placeholder |
+| 11.2 | Parameterized Types | Supply actual type: `Node<Integer>` — compiler enforces it |
+| 11.2 | Generic Interfaces | Interfaces can also have type parameters; implemented generically or concretely |
 | 11.3 | Collections and Generics | Before generics: unsafe, needed casts; after: type-safe, clean |
 | 11.4 | Wildcards | `Node<Integer>` ≠ subtype of `Node<Number>`; use `?` wildcards for flexibility |
-| 11.4 (cont.) | Generic Stack Example | Real-world generic class using `IStack<E>` and `Node<E>` |
-| 11.9 | Type Erasure | Compiler removes all type info at compile time; JVM sees no generics |
+
+| 11.5 | Generic Stack Example | Real-world generic class using `IStack<E>` and `Node<E>` |
+| 11.6 | Type Erasure | Compiler removes all type info at compile time; JVM sees no generics |
+
+| 11.7 | Overloading Implications | Erased signatures can clash → compile error |
+| 11.7 | Overriding Implications | Signature, return type, `throws` must all be compatible |
+| 11.7 | `@Override` Annotation | Compiler validates you're actually overriding — always use it! |
+| 11.7 | Arrays & Generics | Can't create generic arrays; use `List` instead |
+| 11.7 | Exceptions & Generics | Generic classes can't extend `Throwable`; no parameterized `catch` |
 
 ---
 
