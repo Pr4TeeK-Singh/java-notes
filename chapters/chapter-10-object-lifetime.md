@@ -103,11 +103,8 @@ try (FileReader reader = new FileReader("file.txt")) {
 
 ---
 
-> 📌 *Section 10.4 (Object Finalization) — notes coming soon.*
 
----
-
-## 10.5 Initializers
+## 10.4 Initializers
 
 ### What Are Initializers?
 **Initializers** are used to set **initial values** for fields when an object or class is first created.
@@ -142,7 +139,7 @@ class Example {
 
 ---
 
-## 10.6 Field Initializer Expressions
+## 10.5 Field Initializer Expressions
 
 ### What Are They?
 A **field initializer expression** lets you give a field its starting value **right where it is declared**.
@@ -298,9 +295,8 @@ class MyClass {
 | 10.1 | Garbage Collection | Java auto-manages memory; GC reclaims unused objects |
 | 10.2 | Reachable Objects | Object is alive if reachable; unreachable = eligible for GC |
 | 10.3 | Facilitating GC | Null references, use try-with-resources, release early |
-| 10.4 | Object Finalization | *(notes coming soon)* |
-| 10.5 | Initializers | 3 types: field expression, static block, instance block |
-| 10.6 | Field Initializer Expressions | Set field values inline at declaration |
+| 10.4 | Initializers | 3 types: field expression, static block, instance block |
+| 10.5 | Field Initializer Expressions | Set field values inline at declaration |
 | 10.6.1 | Exception Handling in Field Initializers | Checked exceptions must be caught inside — can't escape initializer |
 | 10.7 | Static Initializer Blocks | *(notes coming soon)* |
 | 10.8 | Instance Initializer Blocks | Runs on every object creation; useful for complex/loop-based setup |
