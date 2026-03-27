@@ -18,7 +18,8 @@
 | 8 | [Selected API Classes](chapters/chapter-8-selected-api-classes.md) | java.lang Package, Object Class, Wrapper Classes, String Class |
 | 9 | [Nested Type Declarations](chapters/chapter-9-nested-type-declarations.md) | Static Member Types, Inner Classes, Local Classes, Anonymous Classes |
 | 10 | [Object Lifetime](chapters/chapter-10-object-lifetime.md) | Garbage Collection, Reachable Objects, Facilitating GC, Initializers, Field Initializers |
-| 11 | [Generics](chapters/chapter-11-generics.md) | Introducing Generics, Generic Types, Parameterized Types, Generic Interfaces, Collections, Wildcards, Type Erasure |
+| 11 | [Generics](chapters/chapter-11-generics.md) | Introducing Generics, Generic Types, Parameterized Types, Generic Interfaces, Collections, Wildcards, Type Erasure, Overloading/Overriding Implications |
+| 12 | [Collections, Part I: ArrayLists](chapters/chapter-12-collections-arraylists.md) | Lists, Collections Framework, Declaring & Constructing ArrayLists |
 
 ---
 
@@ -55,7 +56,10 @@ Covers types declared **inside** other types. Explains the three categories of n
 Covers how Java manages memory automatically. Explains **garbage collection** and how the JVM reclaims unused objects, what makes an object **reachable vs unreachable**, and practical tips for **facilitating garbage collection** (nulling references, try-with-resources). Also introduces the three kinds of **initializers** — field initializer expressions, static initializer blocks, and instance initializer blocks — covers **field initializer expressions** in detail including exception handling rules, and explains **instance initializer blocks** (runs on every object creation, useful for complex setup and anonymous classes).
 
 ### [Chapter 11 — Generics](chapters/chapter-11-generics.md)
-Introduces **generics** — Java's way of writing type-safe, reusable code. Covers **generic types** (classes/interfaces with `<E>`), **parameterized types** (`Node<Integer>`), the **diamond operator**, and **generic interfaces**. Also explains how **collections became safer** with generics, the **wildcard `?`** and why `Node<Integer>` is NOT a subtype of `Node<Number>`, a real-world **generic stack** implementation, and **type erasure** — how the compiler strips all generic info at compile time.
+Introduces **generics** — Java's way of writing type-safe, reusable code. Covers **generic types** (classes/interfaces with `<E>`), **parameterized types** (`Node<Integer>`), the **diamond operator**, and **generic interfaces**. Also explains how **collections became safer** with generics, the **wildcard `?`** and why `Node<Integer>` is NOT a subtype of `Node<Number>`, a real-world **generic stack** implementation, **type erasure**, and the implications of generics on **overloading, overriding, arrays, and exception handling** — including the `@Override` annotation and why generic arrays can't be created.
+
+### [Chapter 12 — Collections, Part I: ArrayLists](chapters/chapter-12-collections-arraylists.md)
+Introduces the **Java Collections Framework** and its hierarchy (`Iterable → Collection → List → ArrayList`). Covers **Lists** — ordered, indexed, allows duplicates — and why they beat plain arrays for dynamic data. Explains how to **declare and construct `ArrayList`s**, use the **diamond operator `<>`**, best practices (declare as `List<E>` not `ArrayList<E>`), and how to **add elements and print** the list.
 
 ---
 
@@ -104,6 +108,12 @@ Introduces **generics** — Java's way of writing type-safe, reusable code. Cove
 | Collections & Generics | [Ch. 11](chapters/chapter-11-generics.md#113-collections-and-generics) |
 | Wildcards | [Ch. 11](chapters/chapter-11-generics.md#114-wildcards) |
 | Type Erasure | [Ch. 11](chapters/chapter-11-generics.md#119-type-erasure) |
+| Overloading & Overriding with Generics | [Ch. 11](chapters/chapter-11-generics.md#1112-implications-for-overloading-and-overriding) |
+| `@Override` Annotation | [Ch. 11](chapters/chapter-11-generics.md#the-override-annotation) |
+| Arrays & Generics | [Ch. 11](chapters/chapter-11-generics.md#implications-for-arrays) |
+| Exceptions & Generics | [Ch. 11](chapters/chapter-11-generics.md#implications-for-exception-handling) |
+| Lists & Collections Framework | [Ch. 12](chapters/chapter-12-collections-arraylists.md#121-lists) |
+| Declaring ArrayLists | [Ch. 12](chapters/chapter-12-collections-arraylists.md#122-declaring-references-and-constructing-arraylists) |
 
 ---
 
