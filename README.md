@@ -4,6 +4,12 @@
 
 ---
 
+## 🎯 Interview Prep
+
+📄 **[Java Interview Questions & Answers](java-interview-questions.md)** — 80 Q&As covering all chapters, brief and easy to revise.
+
+---
+
 ## 📖 Table of Contents
 
 | # | Chapter | Topics Covered |
@@ -19,7 +25,7 @@
 | 9 | [Nested Type Declarations](chapters/chapter-9-nested-type-declarations.md) | Static Member Types, Inner Classes, Local Classes, Anonymous Classes |
 | 10 | [Object Lifetime](chapters/chapter-10-object-lifetime.md) | Garbage Collection, Reachable Objects, Facilitating GC, Initializers, Field Initializers |
 | 11 | [Generics](chapters/chapter-11-generics.md) | Introducing Generics, Generic Types, Parameterized Types, Generic Interfaces, Collections, Wildcards, Type Erasure, Overloading/Overriding Implications |
-| 12 | [Collections, Part I: ArrayLists](chapters/chapter-12-collections-arraylists.md) | Lists, Collections Framework, Declaring & Constructing ArrayLists |
+| 12 | [Collections, Part I: ArrayLists](chapters/chapter-12-collections-arraylists.md) | Lists, Collections Framework, Declaring & Constructing ArrayLists, Unmodifiable Lists, Modifying, Querying |
 
 ---
 
@@ -59,7 +65,7 @@ Covers how Java manages memory automatically. Explains **garbage collection** an
 Introduces **generics** — Java's way of writing type-safe, reusable code. Covers **generic types** (classes/interfaces with `<E>`), **parameterized types** (`Node<Integer>`), the **diamond operator**, and **generic interfaces**. Also explains how **collections became safer** with generics, the **wildcard `?`** and why `Node<Integer>` is NOT a subtype of `Node<Number>`, a real-world **generic stack** implementation, **type erasure**, and the implications of generics on **overloading, overriding, arrays, and exception handling** — including the `@Override` annotation and why generic arrays can't be created.
 
 ### [Chapter 12 — Collections, Part I: ArrayLists](chapters/chapter-12-collections-arraylists.md)
-Introduces the **Java Collections Framework** and its hierarchy (`Iterable → Collection → List → ArrayList`). Covers **Lists** — ordered, indexed, allows duplicates — and why they beat plain arrays for dynamic data. Explains how to **declare and construct `ArrayList`s**, use the **diamond operator `<>`**, best practices (declare as `List<E>` not `ArrayList<E>`), and how to **add elements and print** the list.
+Introduces the **Java Collections Framework** and its hierarchy (`Iterable → Collection → List → ArrayList`). Covers **Lists** and why they beat arrays for dynamic data. Explains **declaring and constructing ArrayLists**, **unmodifiable lists** (`List.of()` and `List.copyOf()`), **modifying** a list (`add`, `remove`, `set`, `addAll`), and **querying** a list (`size`, `get`, `contains`, `indexOf`, `subList`, `equals`).
 
 ---
 
@@ -114,6 +120,9 @@ Introduces the **Java Collections Framework** and its hierarchy (`Iterable → C
 | Exceptions & Generics | [Ch. 11](chapters/chapter-11-generics.md#implications-for-exception-handling) |
 | Lists & Collections Framework | [Ch. 12](chapters/chapter-12-collections-arraylists.md#121-lists) |
 | Declaring ArrayLists | [Ch. 12](chapters/chapter-12-collections-arraylists.md#122-declaring-references-and-constructing-arraylists) |
+| Unmodifiable Lists | [Ch. 12](chapters/chapter-12-collections-arraylists.md#122-cont--creating-unmodifiable-lists) |
+| Modifying ArrayList | [Ch. 12](chapters/chapter-12-collections-arraylists.md#123-modifying-an-arrayliste) |
+| Querying ArrayList | [Ch. 12](chapters/chapter-12-collections-arraylists.md#124-querying-an-arrayliste) |
 
 ---
 
