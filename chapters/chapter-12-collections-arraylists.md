@@ -164,6 +164,189 @@ for (String word : palindromes) {
 
 ---
 
+## 12.2 (cont.) — Creating Unmodifiable Lists
+
+### What is an Unmodifiable List?
+An **unmodifiable list** is a list that is **locked** — you can read it but you cannot change it.
+
+> Think of it like a printed menu — you can read it, but you can't add or remove items.
+
+### How to Create One — `List.of()`
+
+```java
+List<String> names = List.of("Ada", "kayak", "Naan");   // ✅ Unmodifiable list
+```
+
+- `List.of()` is overloaded — accepts **0 to 10 elements** (plus a varargs version for more)
+- Elements are stored in the **same order** as passed
+
+### Key Rules
+
+| Rule | Detail |
+|---|---|
+| Can add elements? | ❌ `UnsupportedOperationException` |
+| Can remove elements? | ❌ `UnsupportedOperationException` |
+| Can replace elements? | ❌ `UnsupportedOperationException` |
+| Can sort? | ❌ `UnsupportedOperationException` |
+| Allows `null`? | ❌ `NullPointerException` if you try |
+| Allows duplicates? | ✅ Yes |
+| Order preserved? | ✅ Yes — same order as arguments |
+
+### `List.copyOf()` — Snapshot Copy
+
+```java
+List<String> fab4 = new ArrayList<>();
+fab4.add("John"); fab4.add("Paul"); fab4.add("George"); fab4.add("Ringo");
+
+List<String> fabAlways = List.copyOf(fab4);  // Unmodifiable snapshot
+
+fab4.remove("John");   // modifies original list
+fab4.remove("George");
+
+System.out.println(fab4);       // [Paul, Ringo]        — original changed
+System.out.println(fabAlways);  // [John, Paul, George, Ringo] — copy unchanged!
+```
+
+> `List.copyOf()` creates a **fixed snapshot** — changes to the original do NOT affect the copy.
+
+### Unmodifiable vs Regular List
+
+| Feature | Regular ArrayList | Unmodifiable List (`List.of`) |
+|---|---|---|
+| Add elements | ✅ Yes | ❌ No |
+| Remove elements | ✅ Yes | ❌ No |
+| Read elements | ✅ Yes | ✅ Yes |
+| Allows `null` | ✅ Yes | ❌ No |
+| Memory efficient | Normal | ✅ More efficient |
+
+---
+
+## 12.3 Modifying an ArrayList
+
+### Adding Elements
+
+#### `add(E element)` — Append to end
+```java
+list.add("Bob");       // adds "Bob" at the END of the list
+```
+Returns `true` if the list was changed.
+
+#### `add(int index, E element)` — Insert at position
+```java
+list.add(0, "Alice");  // inserts "Alice" at index 0, shifts everything right
+```
+Throws `IndexOutOfBoundsException` if index < 0 or > size().
+
+#### `addAll(Collection c)` — Add all from another collection
+```java
+list.addAll(otherList);         // appends all elements from otherList at the end
+list.addAll(2, otherList);      // inserts all at index 2, shifts rest right
+```
+
+### Removing Elements
+
+#### `remove(int index)` — Remove by position
+```java
+list.remove(0);        // removes element at index 0 — shifts remaining elements left
+```
+
+#### `remove(Object o)` — Remove by value
+```java
+list.remove("John");   // removes the FIRST occurrence of "John"
+```
+
+> ⚠️ **Tricky:** For `List<Integer>`, `remove(1)` removes by **index**, not value.
+> To remove the value `1`, use: `list.remove(Integer.valueOf(1))`
+
+### Replacing Elements
+
+#### `set(int index, E element)` — Replace at position
+```java
+list.set(0, "NewValue");  // replaces element at index 0 with "NewValue"
+```
+Returns the old element that was replaced.
+
+### Quick Method Reference
+
+| Method | What it does |
+|---|---|
+| `add(E e)` | Append to end |
+| `add(int i, E e)` | Insert at index `i` |
+| `addAll(Collection c)` | Add all from another collection at end |
+| `addAll(int i, Collection c)` | Insert all at index `i` |
+| `remove(int i)` | Remove at index `i` |
+| `remove(Object o)` | Remove first occurrence of value |
+| `set(int i, E e)` | Replace element at index `i` |
+
+---
+
+## 12.4 Querying an ArrayList
+
+### Size and Empty Check
+
+```java
+list.size();       // number of elements currently in the list
+list.isEmpty();    // true if size == 0
+```
+
+- First element is always at index `0`
+- Last element is always at index `size() - 1`
+
+### Getting Elements
+
+```java
+list.get(0);                  // gets first element
+list.get(list.size() - 1);    // gets last element
+```
+Throws `IndexOutOfBoundsException` if index < 0 or >= size().
+
+### Searching
+
+```java
+list.contains("kayak");       // true if "kayak" is in the list
+list.indexOf("Bob");          // index of FIRST occurrence (-1 if not found)
+list.lastIndexOf("Bob");      // index of LAST occurrence (-1 if not found)
+```
+`contains()`, `indexOf()`, `lastIndexOf()` use **`.equals()`** to compare — not `==`.
+
+### Comparing Two Lists
+
+```java
+List<String> strList2 = new ArrayList<>(strList);
+boolean equal = strList.equals(strList2);   // true — same size and same elements in order
+```
+Two lists are equal if: same size + all corresponding elements are equal (by `.equals()`).
+
+### Getting a Sublist
+
+```java
+List<String> sub = strList.subList(1, 4);  // elements from index 1 to 3 (not 4)
+```
+
+> ⚠️ `subList()` returns a **view** — not a copy. Changes to the sublist **affect the original list** and vice versa!
+
+```java
+// [Naan, kayak, Bob, Rotator, Bob]
+List<String> strList3 = strList.subList(1, 4);  // [kayak, Bob, Rotator]
+strList3.remove(0);                              // removes "kayak" from sublist
+// Now strList = [Naan, Bob, Rotator, Bob]       — original is also changed!
+```
+
+### All Query Methods
+
+| Method | Returns | What it does |
+|---|---|---|
+| `size()` | `int` | Number of elements |
+| `isEmpty()` | `boolean` | Is the list empty? |
+| `get(int i)` | `E` | Element at index `i` |
+| `contains(Object o)` | `boolean` | Is `o` in the list? |
+| `indexOf(Object o)` | `int` | Index of first match (-1 if none) |
+| `lastIndexOf(Object o)` | `int` | Index of last match (-1 if none) |
+| `subList(int from, int to)` | `List<E>` | View from `from` to `to-1` |
+| `equals(Object o)` | `boolean` | Same size and elements? |
+
+---
+
 ## Chapter 12 — Quick Summary
 
 | Section | Topic | Key Idea |
@@ -173,6 +356,9 @@ for (String word : palindromes) {
 | 12.2 | Declaring ArrayLists | Use `List<E>` type, `new ArrayList<>()`, diamond operator |
 | 12.2 | Constructors | Empty (default), empty (sized), or copy from another collection |
 | 12.2 | Adding Elements | `add(E)` appends to end; list grows automatically |
+| 12.2 | Unmodifiable Lists | `List.of()` — locked list; no add/remove/null; `List.copyOf()` for snapshot |
+| 12.3 | Modifying ArrayList | `add`, `remove`, `set`, `addAll` — insert, delete, replace elements |
+| 12.4 | Querying ArrayList | `size`, `get`, `contains`, `indexOf`, `subList`, `equals` |
 
 ---
 
